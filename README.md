@@ -12,5 +12,4 @@ I meant this project to be the test of skills and how far I could achieve. Few s
 
 The app doesn’t crash and works as expected, so no rough edges have been left out even in this bare bones version.
 
-![Alt text](https://preview.ibb.co/mNG8Ub/1.png)
-![Alt text](https://preview.ibb.co/euRmFG/2.png)
+![Alt text](https://preview.ibb.co/mNG8Ub/1.png) ![Alt text](https://preview.ibb.co/euRmFG/2.png)
