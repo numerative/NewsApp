@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,16 +60,13 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
         currentHighlight = mHighlights.get(position);
 
         //Set headline available at the current position
-        TextView headlinetextView = viewHolder.headlineTextView;
-        headlinetextView.setTextColor((Color.rgb(0,0,0)));
-        headlinetextView.setText(currentHighlight.getHeadline());
+        viewHolder.headlineTextView.setTextColor((Color.rgb(0, 0, 0)));
+        viewHolder.headlineTextView.setText(currentHighlight.getHeadline());
         //Set trailtext available at the current position
-        TextView trailTextView = viewHolder.trailTextView;
-        trailTextView.setTextColor((Color.rgb(0,0,0)));
-        trailTextView.setText(currentHighlight.getTrailText());
+        viewHolder.trailTextView.setTextColor((Color.rgb(0, 0, 0)));
+        viewHolder.trailTextView.setText(currentHighlight.getTrailText());
         //Set date available at the current position
-        TextView dateTextView = viewHolder.dateTextView;
-        dateTextView.setTextColor((Color.rgb(0,0,0)));
+        viewHolder.dateTextView.setTextColor((Color.rgb(0, 0, 0)));
         //Convert to a readable date format
         String jSDateFormat = currentHighlight.getlastModified();
 
@@ -86,7 +81,11 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
         }
         String formattedDate = destFormat.format(date);
         //Setting the Text to the View
-        dateTextView.setText(formattedDate);
+        viewHolder.dateTextView.setText(formattedDate);
+
+        //Setting Section Name
+        viewHolder.sectionNameTextView.setTextColor((Color.rgb(0, 0, 0)));
+        viewHolder.sectionNameTextView.setText(currentHighlight.getSectionName());
     }
 
 
@@ -101,10 +100,11 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView headlineTextView;
-        public TextView trailTextView;
-        public TextView dateTextView;
-        public ImageView thumbnailView;
+        private TextView headlineTextView;
+        private TextView trailTextView;
+        private TextView dateTextView;
+        private ImageView thumbnailView;
+        private TextView sectionNameTextView;
         private Context context;
 
 
@@ -117,6 +117,7 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
             headlineTextView = itemView.findViewById(R.id.headline);
             trailTextView = itemView.findViewById(R.id.trail_text);
             dateTextView = itemView.findViewById(R.id.last_modified);
+            sectionNameTextView = itemView.findViewById(R.id.section_name);
             thumbnailView = itemView.findViewById(R.id.background_thumbnail);
             //Store the context
             context = getContext();

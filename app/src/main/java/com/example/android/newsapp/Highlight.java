@@ -1,44 +1,49 @@
 package com.example.android.newsapp;
 
-import android.graphics.Bitmap;
-
 /**
  * Custom Data Type to store webTitle, trailText, Thumbnail, and Last Modified Date
  */
 
 public class Highlight {
-    private String mHeadline;
-    private String mTrailText;
-    private String mLastModified;
-    private String mWebUrl;
-    private int mIntValueCorrespondingToActualPosition;
+    private String headline;
+    private String trailText;
+    private String lastModified;
+    private String webUrl;
+    private String sectionName;
+    private int intValueCorrespondingToActualPosition;
 
-    public Highlight(String headline, String trailText, String lastModified, String webUrl, int
-            IntValueCorrespondingToActualPosition) {
-        mHeadline = headline;
-        mTrailText = trailText;
-        mLastModified = lastModified;
-        mWebUrl = webUrl;
-        mIntValueCorrespondingToActualPosition = IntValueCorrespondingToActualPosition;
+    public Highlight(String headline, String trailText, String lastModified, String webUrl,
+                     String sectionName, int intValueCorrespondingToActualPosition) {
+        this.headline = headline;
+        this.trailText = trailText;
+        this.lastModified = lastModified;
+        this.webUrl = webUrl;
+        this.sectionName = sectionName;
+        this.intValueCorrespondingToActualPosition = intValueCorrespondingToActualPosition;
     }
 
     //Get the Headline of the Highlight
     public String getHeadline() {
-        return mHeadline;
+        return headline;
     }
 
     //Get the TrailText of the Highlight
     public String getTrailText() {
-        return mTrailText;
+        return trailText;
     }
 
     //Get the LastModified Date
     public String getlastModified() {
-        return mLastModified;
+        return lastModified;
     }
 
     //Get the webUrl
     public String getWebUrl() {
-        return mWebUrl;
+        return webUrl;
+    }
+
+    //Get the sectionName
+    public String getSectionName() {
+        return sectionName;
     }
 }

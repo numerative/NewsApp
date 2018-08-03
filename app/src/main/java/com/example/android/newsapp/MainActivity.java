@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     String lastModified;
     String thumbnailUrl;
     String webUrl;
+    String sectionName;
     int i;
     int f;
     // Defined Array values to show in ListView
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         //Appending the Page number of the search result
       //  queryUri = queryUri.appendQueryParameter("page", "2");
         //Appending the API KEY which is set to TEST
-        queryUri = queryUri.appendQueryParameter("api-key", "test");
+        queryUri = queryUri.appendQueryParameter("api-key", "8e3b821f-a397-425a-92e5-85ceed0ac85b");
 
         //Show the following fields for the search page preview
         queryUri = queryUri.appendQueryParameter("show-fields",
@@ -159,8 +160,11 @@ public class MainActivity extends AppCompatActivity {
                     thumbnailUrl = fields.getString("thumbnail");
                     //Link to open the article
                     webUrl = webTitleArray.getString("webUrl");
+                    //Section Name to which the article belongs
+                    sectionName = webTitleArray.getString("sectionName");
                     //Create new object
-                    Highlight highlight = new Highlight(headline, trailText, lastModified, webUrl, i);
+                    Highlight highlight = new Highlight(headline, trailText, lastModified, webUrl,
+                            sectionName, i);
                     //Add the new highlight to the ArrayList
                     highlights.add(highlight);
                     //Initializing the Loader. Fingers crossed

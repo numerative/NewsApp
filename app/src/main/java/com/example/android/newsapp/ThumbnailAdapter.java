@@ -66,13 +66,10 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
         Log.v("Adapterposition", String.valueOf(adapterposition));
 
         //Set headline available at the current position
-        TextView headlinetextView = viewHolder.headlineTextView;
-        headlinetextView.setText(currentHighlight.getHeadline());
+        viewHolder.headlineTextView.setText(currentHighlight.getHeadline());
         //Set trailtext available at the current position
-        TextView trailTextView = viewHolder.trailTextView;
-        trailTextView.setText(currentHighlight.getTrailText());
+        viewHolder.trailTextView.setText(currentHighlight.getTrailText());
         //Set date available at the current position
-        TextView dateTextView = viewHolder.dateTextView;
         //Convert to a readable date format
         String jSDateFormat = currentHighlight.getlastModified();
 
@@ -87,14 +84,16 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
         }
         String formattedDate = destFormat.format(date);
         //Setting the Text to the View
-        dateTextView.setText(formattedDate);
+        viewHolder.dateTextView.setText(formattedDate);
+
+        //Setting Section Name
+        viewHolder.sectionNameTextView.setText(currentHighlight.getSectionName());
 
         //Get the data model based on position
         currentThumbnail = mThumbnails.get(position);
 
         //Set the thumbnail on the position
-        ImageView thumbnailView = viewHolder.thumbnailView;
-        thumbnailView.setImageBitmap(currentThumbnail);
+        viewHolder.thumbnailView.setImageBitmap(currentThumbnail);
     }
 
     //Returns the total count of items in the list
@@ -108,10 +107,11 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView headlineTextView;
-        public TextView trailTextView;
-        public TextView dateTextView;
-        public ImageView thumbnailView;
+        private TextView headlineTextView;
+        private TextView trailTextView;
+        private TextView dateTextView;
+        private ImageView thumbnailView;
+        private TextView sectionNameTextView;
         private Context context;
 
         // We also create a constructor that accepts the entire item row
@@ -123,6 +123,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
             headlineTextView = itemView.findViewById(R.id.headline);
             trailTextView = itemView.findViewById(R.id.trail_text);
             dateTextView = itemView.findViewById(R.id.last_modified);
+            sectionNameTextView = itemView.findViewById(R.id.section_name);
             thumbnailView = itemView.findViewById(R.id.background_thumbnail);
             //Store the context
             context = getContext();
@@ -135,11 +136,9 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
         public void onClick(View view) {
             int position = getAdapterPosition(); //gets item position
             Highlight highlight = mHighlights.get(position);
-            Log.v("ClickPosition", String.valueOf(position));
             String uri = highlight.getWebUrl();
             Uri parsed = Uri.parse(uri);
             Intent webIntent = new Intent(Intent.ACTION_VIEW, parsed);
-            Log.v("IntentUri", parsed.toString());
             context.startActivity(webIntent);
         }
     }
