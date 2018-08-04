@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (rvHighlights != null) { //Keep Scroll Position of if not null
+        if (rvHighlights != null) { //Keep Scroll Position if not null
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
 
