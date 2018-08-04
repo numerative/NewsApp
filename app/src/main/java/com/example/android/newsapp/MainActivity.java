@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     String thumbnailUrl;
     String webUrl;
     String sectionName;
+    SearchView searchBar;
     int i;
     int f;
     // Defined Array values to show in ListView
@@ -53,35 +55,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //Finding and assigning a floatingActionButton as the Search button to a Variable.
         FloatingActionButton searchButton = findViewById(R.id.search_button);
+        //Find the view containing the query
+        searchBar = findViewById(R.id.search_bar);
+        hideKeyboard();
+        fetchRecentNews();
         //Setting an OnClickListener to execute activities on Click.
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Clearing previous image data, if any
                 thumbnails.clear();
-                //Closing the softkeyboard
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                assert inputManager != null;
-                inputManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
-                //Find the view containing the query
-                SearchView searchBar = findViewById(R.id.search_bar);
                 //Convert the Query to String
                 searchQuery = searchBar.getQuery().toString();
-                //Getting a search query specific URL
-                queryUri = getUri(baseURL);
-                //Get a reference to the LoaderManager, in order to interact with loaders.
-                android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
-                //Initialize the loader. If loader with the id doesn't exist, it will use the
-                //onCreateLoader to create the loader and restart on second instance of search
-                //(no reuse as in initLoader)
-                loaderManager.restartLoader(1, null, new jsonLoader());
-                //Creating 9 placeholder values.
-                for (int f = 0; f < 9; f++) {
-                    thumbnails.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_search_black_48dp));
-                }
+                hideKeyboard();
+                fetchSearchedNewsQuery();
             }
         });
 
@@ -89,6 +76,45 @@ public class MainActivity extends AppCompatActivity {
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
 
+    }
+
+    protected void onResume() {
+        super.onResume();
+    }
+
+    protected void fetchSearchedNewsQuery() {
+        //Getting a search query specific URL
+        queryUri = getUri(baseURL);
+        //Get a reference to the LoaderManager, in order to interact with loaders.
+        android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
+        //Initialize the loader. If loader with the id doesn't exist, it will use the
+        //onCreateLoader to create the loader and restart on second instance of search
+        //(no reuse as in initLoader)
+        loaderManager.restartLoader(1, null, new jsonLoader());
+        //Creating 9 placeholder values.
+        for (int f = 0; f < 9; f++) {
+            thumbnails.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_search_black_48dp));
+        }
+    }
+
+    protected void fetchRecentNews() {
+        searchQuery = "";
+        fetchSearchedNewsQuery();
+    }
+
+    protected void hideKeyboard() {
+        //Closing the softkeyboard
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        try { //Hiden when search button is clicked
+            assert inputManager != null;
+            inputManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (NullPointerException e) {
+            Log.e("Keyboard Not found", e.toString());
+        }
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Hidden during onCreate
     }
 
     /*
@@ -104,17 +130,20 @@ public class MainActivity extends AppCompatActivity {
         Uri.Builder queryUri = baseUri.buildUpon();
 
         //Appending the Search Query
-        queryUri = queryUri.appendQueryParameter("q", searchQuery);
+        if (!searchQuery.equals("")) { //If searchquery is "", fetch the recent news
+            //Excluding the below tag and query from URL fetches the recent news.
+            queryUri = queryUri.appendQueryParameter("q", searchQuery);
+        }
         //Requesting JSON format
         queryUri = queryUri.appendQueryParameter("format", "json");
         //Appending from date parameter
-       // queryUri = queryUri.appendQueryParameter("from-date", "2016-09-30");
+        // queryUri = queryUri.appendQueryParameter("from-date", "2016-09-30");
         //Appending to date parameter
-       // queryUri = queryUri.appendQueryParameter("to-date", "2017-09-30");
+        // queryUri = queryUri.appendQueryParameter("to-date", "2017-09-30");
         //Appending Order by parameter
-      //  queryUri = queryUri.appendQueryParameter("order-by", "newest");
+        //  queryUri = queryUri.appendQueryParameter("order-by", "newest");
         //Appending the Page number of the search result
-      //  queryUri = queryUri.appendQueryParameter("page", "2");
+        //  queryUri = queryUri.appendQueryParameter("page", "2");
         //Appending the API KEY which is set to TEST
         queryUri = queryUri.appendQueryParameter("api-key", "8e3b821f-a397-425a-92e5-85ceed0ac85b");
 

@@ -1,9 +1,11 @@
 package com.example.android.newsapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,10 +23,6 @@ import java.util.Date;
 // Note that we specify the custom ViewHolder which gives us access to our views
 public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.ViewHolder> {
 
-    public Highlight currentHighlight;
-    public Bitmap currentThumbnail;
-    //Creating a global highlightView for setting an onclicklistener (TEST basis)
-    View highlightView;
     // Store a member variable for the contacts
     private ArrayList<Highlight> mHighlights;
     //Store the context for easy access
@@ -32,7 +30,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
     private ArrayList<Bitmap> mThumbnails;
 
     //Pass in the string array into the constructor
-    public ThumbnailAdapter(Context context, ArrayList<Highlight> highlights, ArrayList<Bitmap> thumbnail) {
+    ThumbnailAdapter(Context context, ArrayList<Highlight> highlights, ArrayList<Bitmap> thumbnail) {
         mHighlights = highlights;
         mContext = context;
         mThumbnails = thumbnail;
@@ -44,26 +42,25 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
     }
 
     // Usually involves inflating a layout from XML and returning the holder
+    @NonNull
     @Override
-    public ThumbnailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ThumbnailAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //Inflate the custom layout
-        highlightView = inflater.inflate(R.layout.list_item, parent, false);
+        View highlightView = inflater.inflate(R.layout.list_item, parent, false);
 
         //Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(highlightView);
-        return viewHolder;
+        return new ViewHolder(highlightView);
     }
 
     //Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(ThumbnailAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ThumbnailAdapter.ViewHolder viewHolder, int position) {
         //Get the data model based on position
-        currentHighlight = mHighlights.get(position);
-        int adapterposition = position;
-        Log.v("Adapterposition", String.valueOf(adapterposition));
+        Highlight currentHighlight = mHighlights.get(position);
+        Log.v("Adapterposition", String.valueOf(position));
 
         //Set headline available at the current position
         viewHolder.headlineTextView.setText(currentHighlight.getHeadline());
@@ -74,8 +71,8 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
         String jSDateFormat = currentHighlight.getlastModified();
 
         //Code to Parse the date into desired format
-        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        SimpleDateFormat destFormat = new SimpleDateFormat("MMM d, yyyy hh:mm a");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat destFormat = new SimpleDateFormat("MMM d, yyyy hh:mm a");
         Date date = null;
         try {
             date = sourceFormat.parse(jSDateFormat);
@@ -90,7 +87,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
         viewHolder.sectionNameTextView.setText(currentHighlight.getSectionName());
 
         //Get the data model based on position
-        currentThumbnail = mThumbnails.get(position);
+        Bitmap currentThumbnail = mThumbnails.get(position);
 
         //Set the thumbnail on the position
         viewHolder.thumbnailView.setImageBitmap(currentThumbnail);
@@ -116,7 +113,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);

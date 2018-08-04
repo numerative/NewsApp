@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">News App</string>
+    <string name="search_hint">Search for a Topic</string>
     <string name="background_image_content_description">Background Image</string>
 </resources>
