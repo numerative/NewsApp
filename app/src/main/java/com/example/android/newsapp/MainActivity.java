@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     //Declaring the base URL to which the search queries will be appended
@@ -61,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                assert inputManager != null;
+                inputManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
                 //Find the view containing the query
                 SearchView searchBar = findViewById(R.id.search_bar);
@@ -69,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 searchQuery = searchBar.getQuery().toString();
                 //Getting a search query specific URL
                 queryUri = getUri(baseURL);
-                Log.v("queryUri", queryUri.toString());
                 //Get a reference to the LoaderManager, in order to interact with loaders.
                 android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
                 //Initialize the loader. If loader with the id doesn't exist, it will use the
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (rvHighlights != null) {
+        if (rvHighlights != null) { //Keep Scroll Position of if not null
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
 
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
     //First LoaderCallBack implementation
     private class jsonLoader implements android.support.v4.app.LoaderManager.LoaderCallbacks<String> {
 
+        @NonNull
         @Override
         public android.support.v4.content.Loader<String> onCreateLoader(int i, Bundle argument) {
             return new NewsListLoader(getApplicationContext(), queryUri);
@@ -142,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         //The following code will be executed when the Loader has finished Loading.
         @Override
-        public void onLoadFinished(android.support.v4.content.Loader<String> loader, String jsonResponse
+        public void onLoadFinished(@NonNull android.support.v4.content.Loader<String> loader, String jsonResponse
         ) {
             try {
                 JSONObject jsonObjectAsResponse = new JSONObject(jsonResponse);
@@ -175,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                     loaderManager.restartLoader(i, null, new thumbnailLoader());
                 }
                 // Lookup the recyclerview in activity layout
-                rvHighlights = (RecyclerView) findViewById(R.id.headlines_recycler);
+                rvHighlights = findViewById(R.id.headlines_recycler);
 
                 // Create adapter passing in the Json fields
                 HighlightsAdapter adapter = new HighlightsAdapter(getApplicationContext(), highlights);
@@ -191,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Compulsory code. Specifies what happens when the Loader is reset.
         @Override
-        public void onLoaderReset(android.support.v4.content.Loader loader) {
+        public void onLoaderReset(@NonNull android.support.v4.content.Loader loader) {
             //Nothing here. On purpose.
         }
     }
@@ -200,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
     private class thumbnailLoader implements android.support.v4.app.LoaderManager.LoaderCallbacks<Bitmap> {
         int positionStore;
 
+        @NonNull
         @Override
         public android.support.v4.content.Loader<Bitmap> onCreateLoader(int i, Bundle argument) {
             positionStore = i;
@@ -208,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
         //To be executed on finishing Loading
         @Override
-        public void onLoadFinished(android.support.v4.content.Loader<Bitmap> loader, Bitmap thumbnail) {
+        public void onLoadFinished(@NonNull android.support.v4.content.Loader<Bitmap> loader, Bitmap thumbnail) {
             //If the images belong to 1 to 9 positions, then the position simply needs to be
             //replaced by another bitmap. If 10th, add.
             if (positionStore < 9) {
@@ -219,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             //When all 10 places are filled, the following conditions of code are true.
             if (thumbnails.size() == highlights.size()) {
                 // Lookup the recyclerview in activity layout
-                rvHighlights = (RecyclerView) findViewById(R.id.headlines_recycler);
+                rvHighlights = findViewById(R.id.headlines_recycler);
                 //Create adapter passing in the Bitmap images
                 ThumbnailAdapter thumbnailsAdapter = new ThumbnailAdapter(getApplicationContext(),
                         highlights, thumbnails);
@@ -227,14 +231,12 @@ public class MainActivity extends AppCompatActivity {
                 rvHighlights.setAdapter(thumbnailsAdapter);
                 // Set layout manager to position the items
                 rvHighlights.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            } else {
-                return;
             }
         }
 
         //Compulsory code. Specifies what happens when the Loader is reset.
         @Override
-        public void onLoaderReset(android.support.v4.content.Loader loader) {
+        public void onLoaderReset(@NonNull android.support.v4.content.Loader loader) {
             //Nothing here. On purpose.
         }
     }
