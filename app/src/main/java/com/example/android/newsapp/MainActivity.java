@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     String searchQuery;
     String headline;
     String trailText;
-    String lastModified;
+    String publishedDate;
     String thumbnailUrl;
     String webUrl;
     String sectionName;
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Show the following fields for the search page preview
         queryUri = queryUri.appendQueryParameter("show-fields",
-                "trailText,headLine,lastModified,thumbnail");
+                "trailText,headLine,publishedDate,thumbnail");
 
         //Return the URI with the given attributes
         return queryUri.build();
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                     headline = webTitleArray.getString("webTitle");
                     JSONObject fields = webTitleArray.getJSONObject("fields");
                     trailText = fields.getString("trailText");
-                    lastModified = fields.getString("lastModified");
+                    publishedDate = webTitleArray.getString("webPublicationDate");
                     //Link for Thumbnail
                     thumbnailUrl = fields.getString("thumbnail");
                     //Link to open the article
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                     //Section Name to which the article belongs
                     sectionName = webTitleArray.getString("sectionName");
                     //Create new object
-                    Highlight highlight = new Highlight(headline, trailText, lastModified, webUrl,
+                    Highlight highlight = new Highlight(headline, trailText, publishedDate, webUrl,
                             sectionName, i);
                     //Add the new highlight to the ArrayList
                     highlights.add(highlight);
