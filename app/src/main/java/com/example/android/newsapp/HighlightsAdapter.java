@@ -1,9 +1,11 @@
 package com.example.android.newsapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,16 +22,13 @@ import java.util.Date;
 // Note that we specify the custom ViewHolder which gives us access to our views
 public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.ViewHolder> {
 
-    //Creating a global highlightView for setting an onclicklistener (TEST basis)
-    View highlightView;
-    public Highlight currentHighlight;
     // Store a member variable for the contacts
     private ArrayList<Highlight> mHighlights;
     //Store the context for easy access
     private Context mContext;
 
     //Pass in the string array into the constructor
-    public HighlightsAdapter(Context context, ArrayList<Highlight> highlights) {
+    HighlightsAdapter(Context context, ArrayList<Highlight> highlights) {
         mHighlights = highlights;
         mContext = context;
     }
@@ -40,24 +39,24 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
     }
 
     // Usually involves inflating a layout from XML and returning the holder
+    @NonNull
     @Override
-    public HighlightsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HighlightsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         //Inflate the custom layout
-        highlightView = inflater.inflate(R.layout.list_item, parent, false);
+        View highlightView = inflater.inflate(R.layout.list_item, parent, false);
 
         //Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(highlightView);
-        return viewHolder;
+        return new ViewHolder(highlightView);
     }
 
     //Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(HighlightsAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull HighlightsAdapter.ViewHolder viewHolder, int position) {
         //Get the data model based on position
-        currentHighlight = mHighlights.get(position);
+        Highlight currentHighlight = mHighlights.get(position);
 
         //Set headline available at the current position
         viewHolder.headlineTextView.setTextColor((Color.rgb(0, 0, 0)));
@@ -71,8 +70,8 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
         String jSDateFormat = currentHighlight.getlastModified();
 
         //Code to Parse the date into desired format
-        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        SimpleDateFormat destFormat = new SimpleDateFormat("MMM d, yyyy hh:mm a");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat destFormat = new SimpleDateFormat("MMM d, yyyy hh:mm a");
         Date date = null;
         try {
             date = sourceFormat.parse(jSDateFormat);
@@ -110,13 +109,13 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
             headlineTextView = itemView.findViewById(R.id.headline);
             trailTextView = itemView.findViewById(R.id.trail_text);
-            dateTextView = itemView.findViewById(R.id.last_modified);
+            dateTextView = itemView.findViewById(R.id.published_date);
             sectionNameTextView = itemView.findViewById(R.id.section_name);
             thumbnailView = itemView.findViewById(R.id.background_thumbnail);
             //Store the context

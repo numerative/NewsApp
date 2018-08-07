@@ -119,7 +119,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
             super(itemView);
             headlineTextView = itemView.findViewById(R.id.headline);
             trailTextView = itemView.findViewById(R.id.trail_text);
-            dateTextView = itemView.findViewById(R.id.last_modified);
+            dateTextView = itemView.findViewById(R.id.published_date);
             sectionNameTextView = itemView.findViewById(R.id.section_name);
             thumbnailView = itemView.findViewById(R.id.background_thumbnail);
             //Store the context
