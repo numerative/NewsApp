@@ -21,13 +21,11 @@
 
     <TextView
         android:id="@+id/headline"
+        style="@style/list_item_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:shadowColor="#000000"
-        android:shadowRadius="2"
-        android:textColor="#ffffff"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -37,14 +35,12 @@
 
     <TextView
         android:id="@+id/trail_text"
+        style="@style/list_item_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:shadowColor="#000000"
-        android:shadowRadius="2"
-        android:textColor="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,28 +49,35 @@
 
     <TextView
         android:id="@+id/published_date"
+        style="@style/list_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:shadowColor="#000000"
-        android:shadowRadius="2"
-        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="@+id/background_thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="12 Nov 2017" />
 
     <TextView
         android:id="@+id/section_name"
+        style="@style/list_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:shadowColor="#000000"
-        android:shadowRadius="2"
-        android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/published_date"
         app:layout_constraintEnd_toEndOf="@+id/published_date"
         tools:text="Books" />
+
+    <TextView
+        android:id="@+id/contributor_name"
+        style="@style/list_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="J. K. Rowling" />
 
 </android.support.constraint.ConstraintLayout>

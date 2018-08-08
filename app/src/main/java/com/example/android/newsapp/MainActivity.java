@@ -150,6 +150,9 @@ public class MainActivity extends AppCompatActivity {
         queryUri = queryUri.appendQueryParameter("show-fields",
                 "trailText,headLine,publishedDate,thumbnail");
 
+        //Append query to fetch Contributor's (Author's) name
+        queryUri = queryUri.appendQueryParameter("show-tags", "contributor");
+
         //Return the URI with the given attributes
         return queryUri.build();
     }
@@ -193,9 +196,14 @@ public class MainActivity extends AppCompatActivity {
                     webUrl = webTitleArray.getString("webUrl");
                     //Section Name to which the article belongs
                     sectionName = webTitleArray.getString("sectionName");
+
+                    //Getting Author's Name
+                    JSONArray tagsArray = webTitleArray.getJSONArray("tags");
+                    JSONObject tag = tagsArray.getJSONObject(0);
+                    String contributor = tag.getString("webTitle");
                     //Create new object
                     Highlight highlight = new Highlight(headline, trailText, publishedDate, webUrl,
-                            sectionName, i);
+                            sectionName, contributor, i);
                     //Add the new highlight to the ArrayList
                     highlights.add(highlight);
                     //Initializing the Loader. Fingers crossed

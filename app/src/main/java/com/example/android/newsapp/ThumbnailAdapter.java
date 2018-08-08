@@ -80,8 +80,15 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
             e.printStackTrace();
         }
         String formattedDate = destFormat.format(date);
-        //Setting the Text to the View
-        viewHolder.dateTextView.setText(formattedDate);
+        if (!formattedDate.equals("")) { //To be only set if a date value is found
+            //Setting the Text to the View
+            viewHolder.dateTextView.setText(formattedDate);
+        }
+
+        String contributorName = currentHighlight.getContributorName();
+        if (!contributorName.equals("")) { //To be only set if a contributor name is found
+            viewHolder.contributorTextView.setText(contributorName);
+        }
 
         //Setting Section Name
         viewHolder.sectionNameTextView.setText(currentHighlight.getSectionName());
@@ -108,6 +115,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
         private TextView trailTextView;
         private TextView dateTextView;
         private ImageView thumbnailView;
+        private TextView contributorTextView;
         private TextView sectionNameTextView;
         private Context context;
 
@@ -121,6 +129,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
             trailTextView = itemView.findViewById(R.id.trail_text);
             dateTextView = itemView.findViewById(R.id.published_date);
             sectionNameTextView = itemView.findViewById(R.id.section_name);
+            contributorTextView = itemView.findViewById(R.id.contributor_name);
             thumbnailView = itemView.findViewById(R.id.background_thumbnail);
             //Store the context
             context = getContext();

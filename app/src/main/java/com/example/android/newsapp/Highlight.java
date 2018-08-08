@@ -10,15 +10,17 @@ public class Highlight {
     private String lastModified;
     private String webUrl;
     private String sectionName;
+    private String contributorName;
     private int intValueCorrespondingToActualPosition;
 
-    public Highlight(String headline, String trailText, String lastModified, String webUrl,
-                     String sectionName, int intValueCorrespondingToActualPosition) {
+    Highlight(String headline, String trailText, String lastModified, String webUrl,
+              String sectionName, String contributorName, int intValueCorrespondingToActualPosition) {
         this.headline = headline;
         this.trailText = trailText;
         this.lastModified = lastModified;
         this.webUrl = webUrl;
         this.sectionName = sectionName;
+        this.contributorName = contributorName;
         this.intValueCorrespondingToActualPosition = intValueCorrespondingToActualPosition;
     }
 
@@ -45,5 +47,10 @@ public class Highlight {
     //Get the sectionName
     public String getSectionName() {
         return sectionName;
+    }
+
+    //Get the Author's Name
+    public String getContributorName() {
+        return contributorName;
     }
 }

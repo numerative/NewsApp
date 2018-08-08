@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -79,8 +78,16 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
             e.printStackTrace();
         }
         String formattedDate = destFormat.format(date);
-        //Setting the Text to the View
-        viewHolder.dateTextView.setText(formattedDate);
+        if (!formattedDate.equals("")) { //To be only set if a date value is found
+            //Setting the Text to the View
+            viewHolder.dateTextView.setText(formattedDate);
+        }
+
+        String contributorName = currentHighlight.getContributorName();
+        viewHolder.contributorTextView.setTextColor((Color.rgb(0, 0, 0)));
+        if (!contributorName.equals("")) { //To be only set if a contributor name is found
+            viewHolder.contributorTextView.setText(contributorName);
+        }
 
         //Setting Section Name
         viewHolder.sectionNameTextView.setTextColor((Color.rgb(0, 0, 0)));
@@ -102,7 +109,7 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
         private TextView headlineTextView;
         private TextView trailTextView;
         private TextView dateTextView;
-        private ImageView thumbnailView;
+        private TextView contributorTextView;
         private TextView sectionNameTextView;
         private Context context;
 
@@ -117,7 +124,7 @@ public class HighlightsAdapter extends RecyclerView.Adapter<HighlightsAdapter.Vi
             trailTextView = itemView.findViewById(R.id.trail_text);
             dateTextView = itemView.findViewById(R.id.published_date);
             sectionNameTextView = itemView.findViewById(R.id.section_name);
-            thumbnailView = itemView.findViewById(R.id.background_thumbnail);
+            contributorTextView = itemView.findViewById(R.id.contributor_name);
             //Store the context
             context = getContext();
             //Attach a click listener to this entire row view
