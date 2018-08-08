@@ -15,8 +15,7 @@
         android:backgroundTintMode="multiply"
         android:fitsSystemWindows="true"
         android:paddingBottom="10dp"
-        android:minHeight="10dp"
-        >
+        android:minHeight="10dp">
 
         <SearchView
             android:id="@+id/search_bar"
@@ -45,5 +44,4 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </android.support.v7.widget.RecyclerView>
-
 </android.support.design.widget.CoordinatorLayout>

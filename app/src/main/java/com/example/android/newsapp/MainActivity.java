@@ -135,14 +135,6 @@ public class MainActivity extends AppCompatActivity {
         }
         //Requesting JSON format
         queryUri = queryUri.appendQueryParameter("format", "json");
-        //Appending from date parameter
-        // queryUri = queryUri.appendQueryParameter("from-date", "2016-09-30");
-        //Appending to date parameter
-        // queryUri = queryUri.appendQueryParameter("to-date", "2017-09-30");
-        //Appending Order by parameter
-        //  queryUri = queryUri.appendQueryParameter("order-by", "newest");
-        //Appending the Page number of the search result
-        //  queryUri = queryUri.appendQueryParameter("page", "2");
         //Appending the API KEY which is set to TEST
         queryUri = queryUri.appendQueryParameter("api-key", BuildConfig.THE_GUARDIAN_API_KEY);
 

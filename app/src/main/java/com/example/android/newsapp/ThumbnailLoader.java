@@ -8,11 +8,10 @@ import android.graphics.Bitmap;
 public class ThumbnailLoader extends android.support.v4.content.AsyncTaskLoader<Bitmap> {
     private String mBitmapUrl;
 
-    public ThumbnailLoader(Context context, String url) {
+    ThumbnailLoader(Context context, String url) {
         super(context);
         mBitmapUrl = url;
     }
-
 
     @Override
     protected void onStartLoading() {
@@ -22,7 +21,6 @@ public class ThumbnailLoader extends android.support.v4.content.AsyncTaskLoader<
     @Override
     public Bitmap loadInBackground() {
         //The QueryUtils class contains all methods that
-        Bitmap thumbnail = QueryUtils.fetchThumbnail(mBitmapUrl);
-        return thumbnail;
+        return QueryUtils.fetchThumbnail(mBitmapUrl);
     }
 }
