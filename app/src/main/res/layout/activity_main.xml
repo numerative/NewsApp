@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="@string/search_hint"
+            android:imeOptions="actionSearch"
             app:layout_scrollFlags="scroll"/>
     </android.support.design.widget.AppBarLayout>
 

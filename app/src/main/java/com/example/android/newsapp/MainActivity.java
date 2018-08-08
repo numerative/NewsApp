@@ -57,29 +57,28 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton searchButton = findViewById(R.id.search_button);
         //Find the view containing the query
         searchBar = findViewById(R.id.search_bar);
-        hideKeyboard();
-        fetchRecentNews();
+        hideKeyboard(); //Prevent Keyboard from popping up on start up.
+        fetchRecentNews(); //Fetch Recent News on start up.
         //Setting an OnClickListener to execute activities on Click.
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Clearing previous image data, if any
-                thumbnails.clear();
-                //Convert the Query to String
-                searchQuery = searchBar.getQuery().toString();
-                hideKeyboard();
-                fetchSearchedNewsQuery();
+                launchSearch();
             }
         });
 
         if (rvHighlights != null) { //Keep Scroll Position if not null
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
-
     }
 
-    protected void onResume() {
-        super.onResume();
+    protected void launchSearch() {
+        //Clearing previous image data, if any
+        thumbnails.clear();
+        //Convert the Query to String
+        searchQuery = searchBar.getQuery().toString();
+        hideKeyboard();
+        fetchSearchedNewsQuery();
     }
 
     protected void fetchSearchedNewsQuery() {
