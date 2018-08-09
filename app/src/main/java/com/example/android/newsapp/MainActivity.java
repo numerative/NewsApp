@@ -216,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
                 rvHighlights.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             } catch (JSONException e) {
                 Log.e("JsonTextError", "Some problem procuring the jsonresponse");
+            } catch (NullPointerException e) {
+                Log.e("No JSON Response", e.toString());
             }
 
         }
