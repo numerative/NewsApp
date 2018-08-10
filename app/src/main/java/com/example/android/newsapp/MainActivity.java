@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     // Defined Array values to show in ListView
     ArrayList<Highlight> highlights = new ArrayList<>();
     ArrayList<Bitmap> thumbnails = new ArrayList<>();
+    TextView noInternetTextView;
+    ProgressBar progressBar;
     private Parcelable listState;
     private RecyclerView rvHighlights;
 
@@ -53,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
             listState = savedInstanceState.getParcelable("ListState");
         }
         setContentView(R.layout.activity_main);
+        noInternetTextView = findViewById(R.id.no_internet_text_view); //TextView when no internet
+        progressBar = findViewById(R.id.progress_bar); //ProgressBar
         //Finding and assigning a floatingActionButton as the Search button to a Variable.
         FloatingActionButton searchButton = findViewById(R.id.search_button);
         //Find the view containing the query
@@ -63,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rvHighlights.setVisibility(View.VISIBLE); //If hidden, make it visible
+                noInternetTextView.setVisibility(View.GONE); //Always Hidden when clicked
+                progressBar.setVisibility(View.VISIBLE); //Displayed the moment button is clicked
                 launchSearch();
             }
         });
@@ -70,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         if (rvHighlights != null) { //Keep Scroll Position if not null
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
+        rvHighlights = findViewById(R.id.headlines_recycler); //Recyclerview that displays highlights
     }
 
     protected void launchSearch() {
@@ -170,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLoadFinished(@NonNull android.support.v4.content.Loader<String> loader, String jsonResponse
         ) {
+            progressBar.setVisibility(View.GONE); //Hide when Loading is finished
+
             try {
                 JSONObject jsonObjectAsResponse = new JSONObject(jsonResponse);
                 JSONObject response = jsonObjectAsResponse.getJSONObject("response");
@@ -205,8 +217,6 @@ public class MainActivity extends AppCompatActivity {
                     //(no reuse as in initLoader)
                     loaderManager.restartLoader(i, null, new thumbnailLoader());
                 }
-                // Lookup the recyclerview in activity layout
-                rvHighlights = findViewById(R.id.headlines_recycler);
 
                 // Create adapter passing in the Json fields
                 HighlightsAdapter adapter = new HighlightsAdapter(getApplicationContext(), highlights);
@@ -218,6 +228,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("JsonTextError", "Some problem procuring the jsonresponse");
             } catch (NullPointerException e) {
                 Log.e("No JSON Response", e.toString());
+                noInternetTextView.setVisibility(View.VISIBLE); //Show when JSONResponse is null
+                rvHighlights.setVisibility(View.INVISIBLE); //Hide the RecyclerView
+                progressBar.setVisibility(View.GONE); //Hide the ProgressBar
             }
 
         }
