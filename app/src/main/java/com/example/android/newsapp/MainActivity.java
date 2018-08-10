@@ -38,9 +38,11 @@ public class MainActivity extends AppCompatActivity {
     String thumbnailUrl;
     String webUrl;
     String sectionName;
+    String contributor;
     SearchView searchBar;
     int i;
     int f;
+    int resultsLength;
     // Defined Array values to show in ListView
     ArrayList<Highlight> highlights = new ArrayList<>();
     ArrayList<Bitmap> thumbnails = new ArrayList<>();
@@ -100,10 +102,6 @@ public class MainActivity extends AppCompatActivity {
         //onCreateLoader to create the loader and restart on second instance of search
         //(no reuse as in initLoader)
         loaderManager.restartLoader(1, null, new jsonLoader());
-        //Creating 9 placeholder values.
-        for (int f = 0; f < 9; f++) {
-            thumbnails.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_search_black_48dp));
-        }
     }
 
     protected void fetchRecentNews() {
@@ -145,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
         }
         //Requesting JSON format
         queryUri = queryUri.appendQueryParameter("format", "json");
+        //Fetch 20 news at a time.
+        queryUri = queryUri.appendQueryParameter("page-size", "20");
         //Appending the API KEY which is set to TEST
         queryUri = queryUri.appendQueryParameter("api-key", BuildConfig.THE_GUARDIAN_API_KEY);
 
@@ -187,8 +187,10 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject response = jsonObjectAsResponse.getJSONObject("response");
                 JSONArray results = response.getJSONArray("results");
                 highlights.clear();
+                resultsLength = results.length();
+                Log.v("Results Length", String.valueOf(resultsLength));
                 //for loop to store all items in the array list
-                for (i = 0; i < results.length(); i++) {
+                for (i = 0; i < resultsLength; i++) {
                     JSONObject webTitleArray = results.getJSONObject(i);
                     headline = webTitleArray.getString("webTitle");
                     JSONObject fields = webTitleArray.getJSONObject("fields");
@@ -203,8 +205,12 @@ public class MainActivity extends AppCompatActivity {
 
                     //Getting Author's Name
                     JSONArray tagsArray = webTitleArray.getJSONArray("tags");
-                    JSONObject tag = tagsArray.getJSONObject(0);
-                    String contributor = tag.getString("webTitle");
+                    if (!tagsArray.isNull(0)) { //Parse only if contributor array found
+                        JSONObject tag = tagsArray.getJSONObject(0);
+                        contributor = tag.getString("webTitle");
+                    } else { // else just set value to ""
+                        contributor = "";
+                    }
                     //Create new object
                     Highlight highlight = new Highlight(headline, trailText, publishedDate, webUrl,
                             sectionName, contributor, i);
@@ -225,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 // Set layout manager to position the items
                 rvHighlights.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             } catch (JSONException e) {
-                Log.e("JsonTextError", "Some problem procuring the jsonresponse");
+                Log.e("JsonTextError", e.toString());
             } catch (NullPointerException e) {
                 Log.e("No JSON Response", e.toString());
                 noInternetTextView.setVisibility(View.VISIBLE); //Show when JSONResponse is null
@@ -233,6 +239,10 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE); //Hide the ProgressBar
             }
 
+            //Creating results minus 1 placeholder values.
+            for (int f = 0; f < resultsLength - 1; f++) {
+                thumbnails.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_search_black_48dp));
+            }
         }
 
         //Compulsory code. Specifies what happens when the Loader is reset.
@@ -256,9 +266,9 @@ public class MainActivity extends AppCompatActivity {
         //To be executed on finishing Loading
         @Override
         public void onLoadFinished(@NonNull android.support.v4.content.Loader<Bitmap> loader, Bitmap thumbnail) {
-            //If the images belong to 1 to 9 positions, then the position simply needs to be
+            //If the images belong to 1 to length minus 1 positions, then the position simply needs to be
             //replaced by another bitmap. If 10th, add.
-            if (positionStore < 9) {
+            if (positionStore < resultsLength - 1) {
                 thumbnails.set(positionStore, thumbnail);
             } else {
                 thumbnails.add(positionStore, thumbnail);
