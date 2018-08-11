@@ -94,7 +94,12 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
         viewHolder.sectionNameTextView.setText(currentHighlight.getSectionName());
 
         //Get the data model based on position
-        Bitmap currentThumbnail = mThumbnails.get(position);
+        Bitmap currentThumbnail = null;
+        try {
+            currentThumbnail = mThumbnails.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            Log.e("Bitmap OutofBound", e.toString());
+        }
 
         //Set the thumbnail on the position
         viewHolder.thumbnailView.setImageBitmap(currentThumbnail);

@@ -268,10 +268,14 @@ public class MainActivity extends AppCompatActivity {
         public void onLoadFinished(@NonNull android.support.v4.content.Loader<Bitmap> loader, Bitmap thumbnail) {
             //If the images belong to 1 to length minus 1 positions, then the position simply needs to be
             //replaced by another bitmap. If 10th, add.
-            if (positionStore < resultsLength - 1) {
-                thumbnails.set(positionStore, thumbnail);
-            } else {
-                thumbnails.add(positionStore, thumbnail);
+            try {
+                if (positionStore < resultsLength - 1) {
+                    thumbnails.set(positionStore, thumbnail);
+                } else {
+                    thumbnails.add(positionStore, thumbnail);
+                }
+            } catch (IndexOutOfBoundsException e) {
+                Log.e("quick button presses", e.toString());
             }
             //When all 10 places are filled, the following conditions of code are true.
             if (thumbnails.size() == highlights.size()) {
