@@ -3,4 +3,5 @@
     <string name="search_hint">Search for a Topic</string>
     <string name="background_image_content_description">Background Image</string>
     <string name="check_internet">No Internet. \nPlease check your internet and press the Search Button again.</string>
+    <string name="no_data_found_string">No News found. Try searching a different topic.</string>
 </resources>

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     // Defined Array values to show in ListView
     ArrayList<Highlight> highlights = new ArrayList<>();
     ArrayList<Bitmap> thumbnails = new ArrayList<>();
-    TextView noInternetTextView;
+    TextView emptyStateTextView;
     ProgressBar progressBar;
     private Parcelable listState;
     private RecyclerView rvHighlights;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             listState = savedInstanceState.getParcelable("ListState");
         }
         setContentView(R.layout.activity_main);
-        noInternetTextView = findViewById(R.id.no_internet_text_view); //TextView when no internet
+        emptyStateTextView = findViewById(R.id.empty_state_text_view); //TextView when no internet
         progressBar = findViewById(R.id.progress_bar); //ProgressBar
         //Finding and assigning a floatingActionButton as the Search button to a Variable.
         FloatingActionButton searchButton = findViewById(R.id.search_button);
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 rvHighlights.setVisibility(View.VISIBLE); //If hidden, make it visible
-                noInternetTextView.setVisibility(View.GONE); //Always Hidden when clicked
+                emptyStateTextView.setVisibility(View.GONE); //Always Hidden when clicked
                 progressBar.setVisibility(View.VISIBLE); //Displayed the moment button is clicked
                 launchSearch();
             }
@@ -162,9 +162,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        try {
+            outState.putParcelable("ListState", rvHighlights.getLayoutManager().onSaveInstanceState());
+        } catch (NullPointerException e) {
+            Log.e("Issue with Parcelable", e.toString());
+        }
 
-        outState.putParcelable("ListState", rvHighlights.getLayoutManager().onSaveInstanceState());
+    }
 
+    private void setEmptyState() {
+        emptyStateTextView.setVisibility(View.VISIBLE); //Show when JSONResponse is null
+        rvHighlights.setVisibility(View.INVISIBLE); //Hide the RecyclerView
+        progressBar.setVisibility(View.GONE); //Hide the ProgressBar
     }
 
     //First LoaderCallBack implementation
@@ -224,19 +233,23 @@ public class MainActivity extends AppCompatActivity {
                     loaderManager.restartLoader(i, null, new thumbnailLoader());
                 }
 
-                // Create adapter passing in the Json fields
-                HighlightsAdapter adapter = new HighlightsAdapter(getApplicationContext(), highlights);
-                // Attach the adapter to the recyclerview to populate items
-                rvHighlights.setAdapter(adapter);
-                // Set layout manager to position the items
-                rvHighlights.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                if (highlights.size() != 0) { //If highlights found set adapter
+                    // Create adapter passing in the Json fields
+                    HighlightsAdapter adapter = new HighlightsAdapter(getApplicationContext(), highlights);
+                    // Attach the adapter to the recyclerview to populate items
+                    rvHighlights.setAdapter(adapter);
+                    // Set layout manager to position the items
+                    rvHighlights.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                } else { //If no highlights found, set empty state
+                    setEmptyState();
+                    emptyStateTextView.setText(R.string.no_data_found_string);
+                }
             } catch (JSONException e) {
                 Log.e("JsonTextError", e.toString());
             } catch (NullPointerException e) {
                 Log.e("No JSON Response", e.toString());
-                noInternetTextView.setVisibility(View.VISIBLE); //Show when JSONResponse is null
-                rvHighlights.setVisibility(View.INVISIBLE); //Hide the RecyclerView
-                progressBar.setVisibility(View.GONE); //Hide the ProgressBar
+                setEmptyState();
+                emptyStateTextView.setText(R.string.no_data_found_string);
             }
 
             //Creating results minus 1 placeholder values.
