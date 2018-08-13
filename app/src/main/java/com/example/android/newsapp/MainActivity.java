@@ -26,7 +26,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     //Declaring the base URL to which the search queries will be appended
     String baseURL = "http://content.guardianapis.com/search?";
     //Initializing other Variables
@@ -47,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Highlight> highlights = new ArrayList<>();
     ArrayList<Bitmap> thumbnails = new ArrayList<>();
     TextView emptyStateTextView;
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.headlines_recycler)
+    RecyclerView rvHighlights;
     private Parcelable listState;
-    private RecyclerView rvHighlights;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,54 +64,28 @@ public class MainActivity extends AppCompatActivity {
             listState = savedInstanceState.getParcelable("ListState");
         }
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         emptyStateTextView = findViewById(R.id.empty_state_text_view); //TextView when no internet
-        progressBar = findViewById(R.id.progress_bar); //ProgressBar
         //Finding and assigning a floatingActionButton as the Search button to a Variable.
         FloatingActionButton searchButton = findViewById(R.id.search_button);
         //Find the view containing the query
         searchBar = findViewById(R.id.search_bar);
         hideKeyboard(); //Prevent Keyboard from popping up on start up.
-        fetchRecentNews(); //Fetch Recent News on start up.
+        onQueryTextSubmit(""); //Fetch Recent News on start up.
         //Setting an OnClickListener to execute activities on Click.
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rvHighlights.setVisibility(View.VISIBLE); //If hidden, make it visible
-                emptyStateTextView.setVisibility(View.GONE); //Always Hidden when clicked
-                progressBar.setVisibility(View.VISIBLE); //Displayed the moment button is clicked
-                launchSearch();
+                //Convert the Query to String
+                onQueryTextSubmit(searchBar.getQuery().toString());
             }
         });
 
-        if (rvHighlights != null) { //Keep Scroll Position if not null
+        if (progressBar.getVisibility() == View.GONE) { //Keep Scroll Position if ProgressBar GONE
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
-        rvHighlights = findViewById(R.id.headlines_recycler); //Recyclerview that displays highlights
-    }
-
-    protected void launchSearch() {
-        //Clearing previous image data, if any
-        thumbnails.clear();
-        //Convert the Query to String
-        searchQuery = searchBar.getQuery().toString();
-        hideKeyboard();
-        fetchSearchedNewsQuery();
-    }
-
-    protected void fetchSearchedNewsQuery() {
-        //Getting a search query specific URL
-        queryUri = getUri(baseURL);
-        //Get a reference to the LoaderManager, in order to interact with loaders.
-        android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
-        //Initialize the loader. If loader with the id doesn't exist, it will use the
-        //onCreateLoader to create the loader and restart on second instance of search
-        //(no reuse as in initLoader)
-        loaderManager.restartLoader(1, null, new jsonLoader());
-    }
-
-    protected void fetchRecentNews() {
-        searchQuery = "";
-        fetchSearchedNewsQuery();
+        //Set the listener on searchView
+        searchBar.setOnQueryTextListener(this);
     }
 
     protected void hideKeyboard() {
@@ -167,13 +146,39 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             Log.e("Issue with Parcelable", e.toString());
         }
-
     }
 
     private void setEmptyState() {
         emptyStateTextView.setVisibility(View.VISIBLE); //Show when JSONResponse is null
         rvHighlights.setVisibility(View.INVISIBLE); //Hide the RecyclerView
-        progressBar.setVisibility(View.GONE); //Hide the ProgressBar
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String searchString) {
+        searchQuery = searchString;
+        rvHighlights.setVisibility(View.VISIBLE); //If hidden, make it visible
+        emptyStateTextView.setVisibility(View.GONE); //Always Hidden when clicked
+        progressBar.setVisibility(View.VISIBLE); //Displayed the moment button is clicked
+        //Clearing previous image data, if any
+        thumbnails.clear();
+        hideKeyboard();
+
+        //Getting a search query specific URL
+        queryUri = getUri(baseURL);
+
+        //Get a reference to the LoaderManager, in order to interact with loaders.
+        android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
+        //Initialize the loader. If loader with the id doesn't exist, it will use the
+        //onCreateLoader to create the loader and restart on second instance of search
+        //(no reuse as in initLoader)
+        loaderManager.restartLoader(1, null, new jsonLoader());
+
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        return false;
     }
 
     //First LoaderCallBack implementation
@@ -197,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray results = response.getJSONArray("results");
                 highlights.clear();
                 resultsLength = results.length();
-                Log.v("Results Length", String.valueOf(resultsLength));
                 //for loop to store all items in the array list
                 for (i = 0; i < resultsLength; i++) {
                     JSONObject webTitleArray = results.getJSONObject(i);
