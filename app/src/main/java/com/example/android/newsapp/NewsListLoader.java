@@ -3,6 +3,8 @@ package com.example.android.newsapp;
 import android.content.Context;
 import android.net.Uri;
 
+import com.example.android.newsapp.Utils.QueryUtils;
+
 /*
  *This is the code for the Loader that is created when OncreateLoader is implemented.
  */

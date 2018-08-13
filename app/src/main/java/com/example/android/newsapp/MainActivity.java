@@ -1,6 +1,5 @@
 package com.example.android.newsapp;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,52 +7,49 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
+
+import com.example.android.newsapp.Utils.QueryUtils;
+import com.example.android.newsapp.Utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener {
     //Declaring the base URL to which the search queries will be appended
-    String baseURL = "http://content.guardianapis.com/search?";
+    final String BASE_URL = "http://content.guardianapis.com/search?";
     //Initializing other Variables
     Uri queryUri;
-    String searchQuery;
-    String headline;
-    String trailText;
-    String publishedDate;
-    String thumbnailUrl;
-    String webUrl;
-    String sectionName;
-    String contributor;
-    SearchView searchBar;
-    int i;
-    int f;
-    int resultsLength;
+    String searchQuery, headline, trailText, publishedDate, thumbnailUrl, webUrl, sectionName,
+            contributor;
+    int i, f, resultsLength;
     // Defined Array values to show in ListView
     ArrayList<Highlight> highlights = new ArrayList<>();
     ArrayList<Bitmap> thumbnails = new ArrayList<>();
+    @BindView(R.id.search_bar)
+    SearchView searchBar;
+    @BindView(R.id.empty_state_text_view)
     TextView emptyStateTextView;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.headlines_recycler)
     RecyclerView rvHighlights;
+    @BindView(R.id.search_button)
+    FloatingActionButton searchButton;
     private Parcelable listState;
 
     @Override
@@ -65,77 +61,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        emptyStateTextView = findViewById(R.id.empty_state_text_view); //TextView when no internet
-        //Finding and assigning a floatingActionButton as the Search button to a Variable.
-        FloatingActionButton searchButton = findViewById(R.id.search_button);
-        //Find the view containing the query
-        searchBar = findViewById(R.id.search_bar);
-        hideKeyboard(); //Prevent Keyboard from popping up on start up.
+        searchBar.setOnQueryTextListener(this); //Set the listener on searchView
+        Utils.hideKeyboard(MainActivity.this); //Prevent Keyboard from popping up on start up.
         onQueryTextSubmit(""); //Fetch Recent News on start up.
-        //Setting an OnClickListener to execute activities on Click.
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Convert the Query to String
-                onQueryTextSubmit(searchBar.getQuery().toString());
-            }
-        });
 
         if (progressBar.getVisibility() == View.GONE) { //Keep Scroll Position if ProgressBar GONE
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
-        //Set the listener on searchView
-        searchBar.setOnQueryTextListener(this);
-    }
-
-    protected void hideKeyboard() {
-        //Closing the softkeyboard
-        InputMethodManager inputManager = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        try { //Hiden when search button is clicked
-            assert inputManager != null;
-            inputManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus()).getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
-        } catch (NullPointerException e) {
-            Log.e("Keyboard Not found", e.toString());
-        }
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Hidden during onCreate
-    }
-
-    /*
-     * Method that will create the final query URL
-     */
-    public Uri getUri(String baseURL) {
-        /*
-          Building the URL using URI builder
-         */
-        //Initializing with Uri Builder Variable
-        Uri baseUri = Uri.parse(baseURL);
-        //Converting the Uri to Uri Builder
-        Uri.Builder queryUri = baseUri.buildUpon();
-
-        //Appending the Search Query
-        if (!searchQuery.equals("")) { //If searchquery is "", fetch the recent news
-            //Excluding the below tag and query from URL fetches the recent news.
-            queryUri = queryUri.appendQueryParameter("q", searchQuery);
-        }
-        //Requesting JSON format
-        queryUri = queryUri.appendQueryParameter("format", "json");
-        //Fetch 20 news at a time.
-        queryUri = queryUri.appendQueryParameter("page-size", "20");
-        //Appending the API KEY which is set to TEST
-        queryUri = queryUri.appendQueryParameter("api-key", BuildConfig.THE_GUARDIAN_API_KEY);
-
-        //Show the following fields for the search page preview
-        queryUri = queryUri.appendQueryParameter("show-fields",
-                "trailText,headLine,publishedDate,thumbnail");
-
-        //Append query to fetch Contributor's (Author's) name
-        queryUri = queryUri.appendQueryParameter("show-tags", "contributor");
-
-        //Return the URI with the given attributes
-        return queryUri.build();
     }
 
     @Override
@@ -161,13 +93,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         progressBar.setVisibility(View.VISIBLE); //Displayed the moment button is clicked
         //Clearing previous image data, if any
         thumbnails.clear();
-        hideKeyboard();
-
-        //Getting a search query specific URL
-        queryUri = getUri(baseURL);
+        Utils.hideKeyboard(MainActivity.this);
+        queryUri = QueryUtils.getUri(BASE_URL, searchQuery); //Getting a search query specific URL
 
         //Get a reference to the LoaderManager, in order to interact with loaders.
-        android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
+        LoaderManager loaderManager = getSupportLoaderManager();
         //Initialize the loader. If loader with the id doesn't exist, it will use the
         //onCreateLoader to create the loader and restart on second instance of search
         //(no reuse as in initLoader)
@@ -179,6 +109,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextChange(String s) {
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case (R.id.search_button):
+                //Convert the Query to String
+                onQueryTextSubmit(searchBar.getQuery().toString());
+                break;
+            default:
+                break;
+        }
     }
 
     //First LoaderCallBack implementation
@@ -315,4 +257,3 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 }
-

@@ -5,6 +5,8 @@ package com.example.android.newsapp;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.example.android.newsapp.Utils.QueryUtils;
+
 public class ThumbnailLoader extends android.support.v4.content.AsyncTaskLoader<Bitmap> {
     private String mBitmapUrl;
 

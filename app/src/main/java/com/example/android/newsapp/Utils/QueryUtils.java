@@ -1,8 +1,10 @@
-package com.example.android.newsapp;
+package com.example.android.newsapp.Utils;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+
+import com.example.android.newsapp.BuildConfig;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,11 +23,46 @@ import static android.graphics.BitmapFactory.decodeStream;
 
 public class QueryUtils {
 
+    /*
+     * Method that will create the final query URL
+     */
+    public static Uri getUri(String baseURL, String searchQuery) {
+        /*
+          Building the URL using URI builder
+         */
+        //Initializing with Uri Builder Variable
+        Uri baseUri = Uri.parse(baseURL);
+        //Converting the Uri to Uri Builder
+        Uri.Builder queryUri = baseUri.buildUpon();
+
+        //Appending the Search Query
+        if (!searchQuery.equals("")) { //If searchquery is "", fetch the recent news
+            //Excluding the below tag and query from URL fetches the recent news.
+            queryUri = queryUri.appendQueryParameter("q", searchQuery);
+        }
+        //Requesting JSON format
+        queryUri = queryUri.appendQueryParameter("format", "json");
+        //Fetch 20 news at a time.
+        queryUri = queryUri.appendQueryParameter("page-size", "20");
+        //Appending the API KEY which is set to TEST
+        queryUri = queryUri.appendQueryParameter("api-key", BuildConfig.THE_GUARDIAN_API_KEY);
+
+        //Show the following fields for the search page preview
+        queryUri = queryUri.appendQueryParameter("show-fields",
+                "trailText,headLine,publishedDate,thumbnail");
+
+        //Append query to fetch Contributor's (Author's) name
+        queryUri = queryUri.appendQueryParameter("show-tags", "contributor");
+
+        //Return the URI with the given attributes
+        return queryUri.build();
+    }
+
     public static String fetchJsonData(Uri queryUri) {
         //Calling on a method converting URI into URL
         URL queryURL = getURL(queryUri);
         //Initializing Local Variable
-        String jsonResponse = null;
+        String jsonResponse;
         //Calling on a method to make HTTP request and store its return as the String
         jsonResponse = makeHttpRequest(queryURL);
 
