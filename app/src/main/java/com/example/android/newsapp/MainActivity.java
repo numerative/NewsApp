@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ProgressBar progressBar;
     @BindView(R.id.headlines_recycler)
     RecyclerView rvHighlights;
-    @BindView(R.id.search_button)
-    FloatingActionButton searchButton;
     private Parcelable listState;
 
     @Override
@@ -114,10 +111,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case (R.id.search_button):
-                //Convert the Query to String
-                onQueryTextSubmit(searchBar.getQuery().toString());
-                break;
             default:
                 break;
         }
