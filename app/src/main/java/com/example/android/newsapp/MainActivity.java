@@ -1,5 +1,6 @@
 package com.example.android.newsapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ProgressBar progressBar;
     @BindView(R.id.headlines_recycler)
     RecyclerView rvHighlights;
+    @BindView(R.id.main_activity_settings_button)
+    Button settingsButton;
     private Parcelable listState;
 
     @Override
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (progressBar.getVisibility() == View.GONE) { //Keep Scroll Position if ProgressBar GONE
             rvHighlights.getLayoutManager().onRestoreInstanceState(listState);
         }
+        settingsButton.setOnClickListener(this); //Setting listener on the button
     }
 
     @Override
@@ -111,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case (R.id.main_activity_settings_button):
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                break;
             default:
                 break;
         }

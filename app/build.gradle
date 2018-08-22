@@ -20,7 +20,7 @@ android {
     }
     buildTypes.each {
         buildTypes.each {
-            it.buildConfigField 'String', 'THE_GUARDIAN_API_KEY',  GUARDIAN_STUDENT_KEY
+            it.buildConfigField 'String', 'THE_GUARDIAN_API_KEY', GUARDIAN_STUDENT_KEY
         }
     }
     allprojects {
