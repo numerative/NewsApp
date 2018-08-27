@@ -10,5 +10,5 @@
     <string name="settings_order_by_default">@string/settings_order_by_newest_label</string>
     <string name="settings_use_date_label">Use Date</string>
     <string name="settings_use_date_key">use-date</string>
-    <string name="settings_use_date_default">\@string/settings_use_date_published_values</string>
+    <string name="settings_use_date_default">@string/settings_use_date_published_label</string>
 </resources>
