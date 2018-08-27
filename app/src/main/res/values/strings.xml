@@ -4,4 +4,11 @@
     <string name="background_image_content_description">Background Image</string>
     <string name="check_internet">No Internet. \nPlease check your internet and press the Search Button again.</string>
     <string name="no_data_found_string">No News found. Try searching a different topic.</string>
+    <string name="settings_title">News Settings</string>
+    <string name="settings_order_by_label">Order By</string>
+    <string name="settings_order_by_key">orderBy</string>
+    <string name="settings_order_by_default">@string/settings_order_by_newest_label</string>
+    <string name="settings_use_date_label">Use Date</string>
+    <string name="settings_use_date_key">use-date</string>
+    <string name="settings_use_date_default">\@string/settings_use_date_published_values</string>
 </resources>

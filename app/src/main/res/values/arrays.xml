@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="settings_order_by_labels">
+        <item>@string/settings_order_by_newest_label</item>
+        <item>@string/settings_order_by_oldest_label</item>
+        <item>@string/settings_order_by_relevance_label</item>
+    </string-array>
+
+    <string-array name="settings_order_by_values">
+        <item>@string/settings_order_by_newest_values</item>
+        <item>@string/settings_order_by_oldest_values</item>
+        <item>@string/settings_order_by_relevance_values</item>
+    </string-array>
+
+    <string name="settings_order_by_newest_label">Newest</string>
+    <string name="settings_order_by_oldest_label">Oldest</string>
+    <string name="settings_order_by_relevance_label">Relevance</string>
+
+    <string name="settings_order_by_newest_values">newest</string>
+    <string name="settings_order_by_oldest_values">oldest</string>
+    <string name="settings_order_by_relevance_values">relevance</string>
+
+
+    <string-array name="settings_use_date_labels">
+        <item>@string/settings_use_date_published_label</item>
+        <item>@string/settings_use_date_newspaper_edition_label</item>
+        <item>@string/settings_use_date_last_modified_label</item>
+    </string-array>
+
+    <string-array name="settings_use_date_values">
+        <item>@string/settings_use_date_published_values</item>
+        <item>@string/settings_use_date_newspaper_edition_values</item>
+        <item>@string/settings_use_date_last_modified_values</item>
+    </string-array>
+
+    <string name="settings_use_date_published_label">Published</string>
+    <string name="settings_use_date_newspaper_edition_label">Newspaper Edition</string>
+    <string name="settings_use_date_last_modified_label">Last Modified</string>
+
+    <string name="settings_use_date_published_values">published</string>
+    <string name="settings_use_date_newspaper_edition_values">newspaper-edition</string>
+    <string name="settings_use_date_last_modified_values">last-modified</string>
+</resources>
