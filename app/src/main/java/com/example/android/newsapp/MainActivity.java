@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         //Clearing previous image data, if any
         thumbnails.clear();
         Utils.hideKeyboard(MainActivity.this);
-        queryUri = QueryUtils.getUri(BASE_URL, searchQuery); //Getting a search query specific URL
+        queryUri = QueryUtils.getUri(BASE_URL, searchQuery, this); //Getting a search query specific URL
 
         //Get a reference to the LoaderManager, in order to interact with loaders.
         LoaderManager loaderManager = getSupportLoaderManager();

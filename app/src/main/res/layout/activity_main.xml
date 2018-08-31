@@ -11,7 +11,7 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#bcaaa4"
+        android:background="@color/colorPrimary"
         android:backgroundTintMode="multiply"
         android:fitsSystemWindows="true"
         android:minHeight="10dp">

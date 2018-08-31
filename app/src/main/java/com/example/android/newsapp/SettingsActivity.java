@@ -7,6 +7,10 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MenuItem;
+
+import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -14,6 +18,17 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        setTitle(getString(R.string.settings)); //Set title for the ActionBar
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+        }
+        return true;
     }
 
     public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
@@ -32,6 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
+            Log.v("stringValue", stringValue);
             if (preference instanceof ListPreference) {
                 ListPreference listPreference = (ListPreference) preference;
                 int prefIndex = listPreference.findIndexOfValue(stringValue);
@@ -42,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
             } else {
                 preference.setSummary(stringValue);
             }
-            return false;
+            return true;
         }
 
         private void bindPreferenceSummaryToValue(Preference preference) {

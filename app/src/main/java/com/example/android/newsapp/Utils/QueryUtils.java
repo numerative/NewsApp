@@ -1,10 +1,14 @@
 package com.example.android.newsapp.Utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.example.android.newsapp.BuildConfig;
+import com.example.android.newsapp.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,10 +30,20 @@ public class QueryUtils {
     /*
      * Method that will create the final query URL
      */
-    public static Uri getUri(String baseURL, String searchQuery) {
+    public static Uri getUri(String baseURL, String searchQuery, Context context) {
         /*
           Building the URL using URI builder
          */
+        //Getting the key and default values from shared prefs
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String orderBy = sharedPreferences.getString(
+                context.getString(R.string.settings_order_by_key),
+                context.getString(R.string.settings_order_by_default)); //OrderBy Setting Value
+        Log.v("order-by", orderBy);
+        String useDate = sharedPreferences.getString(
+                context.getString(R.string.settings_use_date_key),
+                context.getString(R.string.settings_use_date_default)); //UseDate Setting Value
+        Log.v("usedate", useDate);
         //Initializing with Uri Builder Variable
         Uri baseUri = Uri.parse(baseURL);
         //Converting the Uri to Uri Builder
@@ -46,13 +60,18 @@ public class QueryUtils {
         queryUri = queryUri.appendQueryParameter("page-size", "20");
         //Appending the API KEY which is set to TEST
         queryUri = queryUri.appendQueryParameter("api-key", BuildConfig.THE_GUARDIAN_API_KEY);
-
+        //Appending OrderBy preference
+        queryUri = queryUri.appendQueryParameter("order-by", orderBy);
+        //Appending UseDate preference
+        queryUri = queryUri.appendQueryParameter("use-date", useDate);
         //Show the following fields for the search page preview
         queryUri = queryUri.appendQueryParameter("show-fields",
                 "trailText,headLine,publishedDate,thumbnail");
 
         //Append query to fetch Contributor's (Author's) name
         queryUri = queryUri.appendQueryParameter("show-tags", "contributor");
+
+        Log.v("QueryUri", queryUri.toString());
 
         //Return the URI with the given attributes
         return queryUri.build();
@@ -129,8 +148,8 @@ public class QueryUtils {
     }
 
     /*
-    * For SmallThumbnail Loading
-    */
+     * For SmallThumbnail Loading
+     */
     public static Bitmap fetchThumbnail(String requestUrl) {
         //Create URL object
         URL url = createUrl(requestUrl);
