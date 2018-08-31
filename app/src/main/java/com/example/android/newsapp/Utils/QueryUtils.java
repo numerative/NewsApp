@@ -39,11 +39,9 @@ public class QueryUtils {
         String orderBy = sharedPreferences.getString(
                 context.getString(R.string.settings_order_by_key),
                 context.getString(R.string.settings_order_by_default)); //OrderBy Setting Value
-        Log.v("order-by", orderBy);
         String useDate = sharedPreferences.getString(
                 context.getString(R.string.settings_use_date_key),
                 context.getString(R.string.settings_use_date_default)); //UseDate Setting Value
-        Log.v("usedate", useDate);
         //Initializing with Uri Builder Variable
         Uri baseUri = Uri.parse(baseURL);
         //Converting the Uri to Uri Builder

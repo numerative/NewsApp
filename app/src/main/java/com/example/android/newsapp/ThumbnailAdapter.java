@@ -60,7 +60,6 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.View
     public void onBindViewHolder(@NonNull ThumbnailAdapter.ViewHolder viewHolder, int position) {
         //Get the data model based on position
         Highlight currentHighlight = mHighlights.get(position);
-        Log.v("Adapterposition", String.valueOf(position));
 
         //Set headline available at the current position
         viewHolder.headlineTextView.setText(currentHighlight.getHeadline());
