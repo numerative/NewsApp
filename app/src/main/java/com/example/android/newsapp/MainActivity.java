@@ -82,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        onQueryTextSubmit(searchBar.getQuery().toString()); //Submit Query when navigating back from Settings Activity
+    }
+
     private void setEmptyState() {
         emptyStateTextView.setVisibility(View.VISIBLE); //Show when JSONResponse is null
         rvHighlights.setVisibility(View.INVISIBLE); //Hide the RecyclerView
@@ -154,7 +160,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     trailText = fields.getString("trailText");
                     publishedDate = webTitleArray.getString("webPublicationDate");
                     //Link for Thumbnail
-                    thumbnailUrl = fields.getString("thumbnail");
+                    if (fields.has("thumbnail")) {
+                        thumbnailUrl = fields.getString("thumbnail");
+                    } else {
+                        thumbnailUrl = "placeholder.com";
+                    }
                     //Link to open the article
                     webUrl = webTitleArray.getString("webUrl");
                     //Section Name to which the article belongs

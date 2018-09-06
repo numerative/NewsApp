@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@android:color/darker_gray"
     android:orientation="vertical">
 
     <ImageView
